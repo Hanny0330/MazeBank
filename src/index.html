@@ -1,13 +1,241 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="es">
+
 <head>
-  <meta charset="utf-8">
-  <title>MazeBankProject</title>
-  <base href="/">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <meta charset="UTF-8">
+  <title>MAZE BANK</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Geologica:wght@400;700&family=Inknut+Antiqua:wght@700&display=swap"
+    rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Geologica', sans-serif;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+      background: #8B0000;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      background-color: #8B0000;
+      color: white;
+      width: 650px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Título animado */
+    .titulo {
+      font-size: 32px;
+      font-family: 'Inknut Antiqua', serif;
+      margin-bottom: 20px;
+      text-align: center;
+      animation: fadeInDown 1s ease-out;
+    }
+
+    .titulo .maze {
+      color: white;
+    }
+
+    .titulo .bank {
+      color: #FF3C3C;
+    }
+
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .sidebar p {
+      margin: 5px 0 15px;
+      text-align: center;
+      color: #e6ddddce;
+    }
+
+    /* Buscador personalizado */
+    .search-bar {
+      position: relative;
+      width: 100%;
+      margin-bottom: 20px;
+    }
+
+    .search-bar input {
+      width: 100%;
+      padding: 10px 35px 10px 15px;
+      border: none;
+      border-radius: 20px;
+      background-color: #ded4d488;
+      font-size: 14px;
+      font-family: 'Geologica', sans-serif;
+    }
+
+    .search-bar::after {
+      content: '';
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 16px;
+      color: #8E0F0F;
+    }
+
+    /* Botones */
+    .buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      width: 100%;
+    }
+
+    .button {
+      background-color: #8E0F0F;
+      color: white;
+      padding: 22px 0 14px 0;
+      border-radius: 18px;
+      text-align: center;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      font-family: 'Geologica', sans-serif;
+    }
+
+    .button:hover {
+      background-color: #a31515;
+      transform: scale(1.05);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+    }
+
+    .button img {
+      display: block;
+      margin: 0 auto 8px;
+      width: 44px;
+      height: 44px;
+    }
+
+    /* Contenido principal */
+    .main-content {
+      flex-grow: 1;
+      position: relative;
+      background-size: cover;
+      background-position: center;
+      transition: opacity 1s ease;
+      border-radius: 30px;
+      margin: 15px;
+      background: #fff;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    }
+
+    .main-content.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* Iconos de esquina */
+    .corner-icon {
+      position: absolute;
+      width: 45px;
+      height: 45px;
+      background-color: white;
+      border-radius: 50%;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .corner-icon img {
+      width: 24px;
+      height: 24px;
+    }
+
+    .corner-icon:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+    }
+
+    .corner-icon.support {
+      bottom: 15px;
+      left: 15px;
+    }
+
+    .corner-icon.info {
+      bottom: 15px;
+      right: 15px;
+    }
+  </style>
 </head>
+
 <body>
-  <app-root></app-root>
+  <div class="sidebar">
+    <h1 class="titulo">
+      <span class="maze">MAZE</span><span class="bank">BANK</span>
+    </h1>
+    <p>¡Hola, Juan Pérez!</p>
+    <p>Bienvenido a tu Banca en línea.</p>
+    <div class="search-bar">
+      <input type="text" placeholder="Busca una sección aquí...">
+    </div>
+    <div class="buttons">
+      <div class="button" onclick="ocultarFondo()">
+        <img src="../../../public/icons/icon-transfer.png" alt="Transferir">
+        Transferir
+      </div>
+      <div class="button">
+        <img src="../../../public/icons/icon-pay.png" alt="Pagar Servicio">
+        Pagar Servicio
+      </div>
+      <div class="button">
+        <img src="../../../public/icons/icon-history.png" alt="Historial">
+        Historial
+      </div>
+      <div class="button">
+        <img src="../../../public/icons/icon-card.png" alt="Tarjetas">
+        Tarjetas
+      </div>
+      <div class="button">
+        <img src="../../../public/icons/icon-loan.png" alt="Préstamo">
+        Préstamo
+      </div>
+      <div class="button">
+        <img src="../../../public/icons/icon-profile.png" alt="Perfil">
+        Perfil
+      </div>
+    </div>
+  </div>
+
+  <div class="main-content" id="fondo">
+    <div class="corner-icon support" title="Soporte">
+      <img src="../../../public/icons/icon-support.png" alt="Soporte">
+    </div>
+    <div class="corner-icon info" title="Información">
+      <img src="../../../public/icons/icon-info.png" alt="Información">
+    </div>
+  </div>
+
+  <script>
+    function ocultarFondo() {
+      const fondo = document.getElementById('fondo');
+      fondo.classList.add('hidden');
+    }
+  </script>
 </body>
+
 </html>
