@@ -1,100 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - MazeBank</title>
-    <style>
-        body {
-            background: url('../../../public/IMG/LoginBackground.png') no-repeat center center fixed;
-            background-size: cover;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-
-        .login-container {
-            FONT-WEIGHT: 400;
-            background: #ffffff00;
-            padding: 30px 70px;
-            border-radius: 30px;
-            width: 600px;
-            height: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-        }
-
-        .login-title {
-            text-align: center;
-            font-size: 2rem;
-            font-weight: 600;
-            color: #2d3436;
-        }
-
-        .login-input {
-            padding: 12px 18px;
-            border: 1px solid #dfe6e900;
-            border-radius: 30px;
-            font-size: 1rem;
-            outline: none;
-            margin-bottom: 8px;
-            width: 500px;
-        }
-
-        .login-input:focus {
-            border-color: #0984e3;
-        }
-
-        .forgot-password {
-            font-weight: bold;
-            text-align: center;
-            color: #636e72;
-            font-size: 0.95rem;
-            margin-bottom: 12px;
-        }
-
-        .login-btn {
-            background: #5B0000;
-            color: #fff;
-            border: none;
-            padding: 14px 0;
-            border-radius: 30px;
-            font-size: 1.1rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .login-btn:hover {
-            background: #F4141F;
-        }
-    </style>
-</head>
-
-<body>
-    <form class="login-container"><br><br>
-        <div class="login-title">Iniciar Sesión</div>
-        <div class="input-group">
-            <img class="icon-user" src="../../../public/icons/user.png" alt="" width="28" height="28" style="border-radius:30px; margin-right:10px;" />
-            <input type="text" class="login-input" placeholder="Usuario" required>
-        </div>
-        <div class="input-group">
-            <img class="icon-pass" src="../../../public/icons/lock.png" alt="" width="28" height="28" style="border-radius:30px; margin-right:10px;" />
-            <input type="password" class="login-input" placeholder="Contraseña" required>
-        </div>
-        <div class="forgot-password">¿Haz olvidado tu <a href="recoverpass.html" style="color:#F4141F;text-decoration:underline;border-radius:30px;">contraseña</a>?</div>
-        <button type="submit" class="login-btn">Iniciar</button>
-            <script>
-                document.querySelector('.login-container').addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    window.location.href = 'LoadingProfile.html';
-                });
-            </script>
-    </form>
-</body>
-
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>MazeBank - legacy view removed</title>
+  </head>
+  <body>
+    <p>This static legacy view was removed. Use the SPA at <a href="/">/</a> to access the app.</p>
+  </body>
 </html>

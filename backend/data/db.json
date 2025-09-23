@@ -1,0 +1,44 @@
+{
+  "nextId": {
+    "users": 2,
+    "roles": 4,
+    "refresh_tokens": 3
+  },
+  "roles": [
+    {
+      "id": 1,
+      "name": "cliente"
+    },
+    {
+      "id": 2,
+      "name": "ejecutivo"
+    },
+    {
+      "id": 3,
+      "name": "gerente"
+    }
+  ],
+  "users": [
+    {
+      "id": 1,
+      "email": "juan.perez@email.com",
+      "password_hash": "ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f",
+      "name": "Juan Perez",
+      "role_id": 1
+    }
+  ],
+  "refresh_tokens": [
+    {
+      "id": 1,
+      "user_id": 1,
+      "token_hash": "4f873c0fc57483e8330c92578111808b4fe54119cc5b6fe52466143760016b8b",
+      "expires_at": 1761236052
+    },
+    {
+      "id": 2,
+      "user_id": 1,
+      "token_hash": "a4dac5d4d76d4743c7a9c1e683cf02770b69219eb7d5c1a5991602766d9fc97c",
+      "expires_at": 1761236078
+    }
+  ]
+}

@@ -1,0 +1,120 @@
+name: E2E (Backend + MySQL)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main, REPPER-rama ]
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: Password.123
+          MYSQL_DATABASE: mazebank
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install system MySQL client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y default-mysql-client
+
+      - name: Wait for MySQL
+        env:
+          MYSQL_PWD: Password.123
+        run: |
+          for i in {1..30}; do
+            if mysql -h 127.0.0.1 -u root -e "SELECT 1" >/dev/null 2>&1; then
+              echo "MySQL is up"
+              break
+            fi
+            echo "Waiting for MySQL... ($i)"
+            sleep 2
+          done
+
+      - name: Import database schema
+        env:
+          MYSQL_PWD: Password.123
+        run: |
+          if [ -f src/BD/BD-MazeBank.sql ]; then
+            mysql -h 127.0.0.1 -u root mazebank < src/BD/BD-MazeBank.sql
+          else
+            echo "Schema file not found: src/BD/BD-MazeBank.sql"
+            exit 1
+          fi
+
+      - name: Install npm dependencies
+        run: npm install --legacy-peer-deps
+
+      - name: Start backend
+        run: |
+          nohup node backend/index.js > backend.log 2>&1 &
+          echo "Started backend"
+
+      - name: Wait for backend
+        run: |
+          for i in {1..30}; do
+            if curl --silent --fail http://localhost:3000/api/ping >/dev/null 2>&1; then
+              echo "Backend is up"
+              break
+            fi
+            echo "Waiting for backend... ($i)"
+            sleep 2
+          done
+
+      - name: Run HTTP E2E test
+        run: |
+          node backend/scripts/http_e2e_test.js
+
+      - name: Build frontend
+        run: |
+          npx ng build --configuration development
+
+      - name: Install Playwright
+        run: |
+          npm i -D playwright@1.37.0
+          npx playwright install --with-deps
+
+      - name: Serve frontend
+        run: |
+          npx http-server ./dist/MazeBankProject -p 4200 > frontend.log 2>&1 &
+          echo "Started frontend"
+
+      - name: Wait for frontend
+        run: |
+          for i in {1..20}; do
+            if curl --silent --fail http://localhost:4200/ >/dev/null 2>&1; then
+              echo "Frontend is up"
+              break
+            fi
+            echo "Waiting for frontend... ($i)"
+            sleep 2
+          done
+
+      - name: Run Playwright E2E
+        run: |
+          node e2e/playwright_login_test.js
+
+      - name: Upload backend log
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-log
+          path: backend.log
