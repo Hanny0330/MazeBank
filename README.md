@@ -57,3 +57,70 @@ Angular CLI does not come with an end-to-end testing framework by default. You c
 ## Additional Resources
 
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+
+## Running fullstack locally (Windows PowerShell)
+
+Quick options to run both frontend and backend for manual testing.
+
+1) Recommended: use the convenience PowerShell helper (automates nvm/node/npm install and starts backend)
+
+```powershell
+# From repo root (may require admin for nvm install)
+.\backend\setup-dev.ps1
+
+# Force JSON fallback (no native sqlite build required)
+.\backend\setup-dev.ps1 -UseJson
+```
+
+2) Manual steps (if you prefer):
+
+```powershell
+# Install dependencies
+npm install
+
+# Start backend in JSON fallback mode
+$env:USE_JSON_DB='true'
+node backend/index.js
+
+# In another shell, start frontend dev server
+npm start
+```
+
+3) Shortcut fullstack (runs frontend and backend together using concurrently)
+
+```powershell
+# This uses the npm script 'start:dev' which runs both servers in one window
+npm run start:dev
+```
+
+Open the frontend at `http://localhost:4200` and the backend listens on `http://localhost:3000` by default.
+
+Seeded test user (for login):
+
+- email: `juan.perez@email.com`
+- password: `password123`
+
+If you run into native build errors for `better-sqlite3`, either use the JSON fallback (`USE_JSON_DB=true`) or install a Node LTS version with prebuilt binaries (Node 18.x/20.x) via `nvm-windows`.
+
+Windows convenience launchers
+
+If PowerShell prevents npm scripts from running due to execution policy, you can use the included `.cmd` launchers from the repo root:
+
+- `start-frontend.cmd` — starts the Angular dev server (uses `npx.cmd`)
+- `start-backend.cmd` — starts the backend with `node backend/index.js`
+- `start-fullstack.cmd` — opens two new cmd windows and starts backend + frontend
+
+Run them by double-clicking or from PowerShell/CMD with:
+
+```powershell
+.\start-frontend.cmd
+.\start-backend.cmd
+.\start-fullstack.cmd
+```
+
+If port `4200` is already in use you can use the alternate launchers that run the frontend on `4201`:
+
+```powershell
+.\start-frontend-4201.cmd
+.\start-fullstack-4201.cmd
+```

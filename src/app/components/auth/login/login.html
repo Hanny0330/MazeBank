@@ -1,14 +1,14 @@
-<div class="login-container" [formGroup]="loginForm" (ngSubmit)="submit()">
+<form class="login-container" [formGroup]="loginForm" (ngSubmit)="submit()" aria-label="Login form">
   <div class="login-title">Iniciar Sesión</div>
 
   <div class="input-group">
-    <img class="icon-user" src="/icons/user.png" alt="" width="28" height="28" style="border-radius:30px; margin-right:10px;" />
-    <input type="text" class="login-input" placeholder="Usuario" formControlName="username" />
+    <img class="icon-user" src="../../../../../public/icons/user.png" alt="Usuario" width="28" height="28" style="border-radius:30px; margin-right:10px;" />
+    <input id="email" name="email" type="email" class="login-input" placeholder="Correo electrónico" formControlName="email" required aria-required="true" />
   </div>
 
   <div class="input-group">
-    <img class="icon-pass" src="/icons/lock.png" alt="" width="28" height="28" style="border-radius:30px; margin-right:10px;" />
-    <input type="password" class="login-input" placeholder="Contraseña" formControlName="password" />
+    <img class="icon-pass" src="/icons/lock.png" alt="Contraseña" width="28" height="28" style="border-radius:30px; margin-right:10px;" />
+    <input id="password" name="password" type="password" class="login-input" placeholder="Contraseña" formControlName="password" required aria-required="true" />
   </div>
 
   <div class="forgot-password">¿Haz olvidado tu <a routerLink="/recover" style="color:#F4141F;text-decoration:underline;border-radius:30px;">contraseña</a>?</div>
@@ -16,4 +16,4 @@
   <button type="submit" class="login-btn" [disabled]="loginForm.invalid || loading">Iniciar</button>
 
   <div *ngIf="error" style="color:#F4141F; text-align:center; margin-top:8px">{{ error }}</div>
-</div>
+</form>

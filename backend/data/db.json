@@ -2,7 +2,7 @@
   "nextId": {
     "users": 2,
     "roles": 4,
-    "refresh_tokens": 3
+    "refresh_tokens": 4
   },
   "roles": [
     {
@@ -39,6 +39,24 @@
       "user_id": 1,
       "token_hash": "a4dac5d4d76d4743c7a9c1e683cf02770b69219eb7d5c1a5991602766d9fc97c",
       "expires_at": 1761236078
+    },
+    {
+      "id": 3,
+      "user_id": 1,
+      "token_hash": "097da7b0271c133d682e428c567efe9eb1909c924c175da006ed5ede718126d2",
+      "expires_at": 1761287558
+    },
+    {
+      "id": 4,
+      "user_id": 1,
+      "token_hash": "b14dce7e999f52452f2dc87690d7399b6e669fb3eaafaa4af4ae7d43c5e19ea6",
+      "expires_at": 1761290899
+    },
+    {
+      "id": 5,
+      "user_id": 1,
+      "token_hash": "fff1fef8ac876fa79d15601fd13a7731fe4e3a53536a98a4cca7e1cf0976688b",
+      "expires_at": 1761291859
     }
   ]
 }

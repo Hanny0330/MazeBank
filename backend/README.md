@@ -91,6 +91,25 @@ Automation / convenience
 - `package.json` contains a `start:backend` script that runs `node backend/index.js`.
 - If you want, I can add a `setup-dev.ps1` script that automates `nvm` install, Node install, `npm install`, and `node backend/index.js` (requires admin privileges).
 
+Automation helper
+
+I added `backend/setup-dev.ps1` — a convenience PowerShell script that will attempt to:
+
+- Install `nvm-windows` via `winget` (if not present)
+- Install Node LTS `18.20.0` via `nvm` and switch to it
+- Run `npm install` in the repository root
+- Start the backend
+
+Usage examples (PowerShell):
+
+```powershell
+# Normal run (will try to install nvm if missing)
+.\backend\setup-dev.ps1
+
+# Force JSON fallback mode (no native sqlite build)
+.\backend\setup-dev.ps1 -UseJson
+```
+
 If you'd like, I will now:
 - 1) Add a runtime flag `USE_JSON_DB=true` support to the current `backend/index.js` so the server can fallback automatically if `better-sqlite3` is not present, and
 - 2) Provide a `setup-dev.ps1` script that automates the Node LTS and dependency setup on Windows.

@@ -16,16 +16,16 @@ export class LoginComponent {
   error: string | null = null;
 
   constructor(private fb: FormBuilder, private auth: AuthService, private router: Router) {
-    this.loginForm = this.fb.group({ username: [''], password: [''] });
+  this.loginForm = this.fb.group({ email: [''], password: [''] });
   }
 
   async submit() {
     if (this.loginForm.invalid) return;
     this.loading = true;
     this.error = null;
-    const { username, password } = this.loginForm.value as { username: string; password: string };
+    const { email, password } = this.loginForm.value as { email: string; password: string };
     try {
-      const resp = await this.auth.login(username, password);
+      const resp = await this.auth.login(email, password);
       // navigate to loading-profile so existing route/component can fetch profile
       await this.router.navigate(['/loading-profile']);
     } catch (err: any) {

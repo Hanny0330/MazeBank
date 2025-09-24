@@ -4,23 +4,29 @@ import { firstValueFrom } from 'rxjs';
 import { Role } from '../models/role';
 
 interface LoginResponse {
-  token: string;
+  accessToken: string;
   refreshToken?: string;
-  user: { id: number; username: string; role: string };
+  expiresIn?: number;
+  userId?: number;
 }
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
+  // When developing locally we talk directly to the backend running on 3000.
+  // If you later add a frontend proxy you can change this to '/api' or wire
+  // it from Angular environments.
+  private apiBase = 'http://localhost:3000/api';
+
   private tokenKey = 'maze_token';
   private refreshKey = 'maze_refresh';
 
   constructor(private http: HttpClient) {}
 
-  async login(username: string, password: string): Promise<LoginResponse> {
-    const resp$ = this.http.post<LoginResponse>('/api/auth/login', { username, password });
+  async login(email: string, password: string): Promise<LoginResponse> {
+    const resp$ = this.http.post<LoginResponse>(`${this.apiBase}/auth/login`, { email, password });
     const resp = await firstValueFrom(resp$);
-    if (resp && resp.token) {
-      this.setTokens(resp.token, resp.refreshToken);
+    if (resp && resp.accessToken) {
+      this.setTokens(resp.accessToken, resp.refreshToken);
     }
     return resp;
   }
@@ -43,7 +49,7 @@ export class AuthService {
     const refresh = this.getRefreshToken();
     if (refresh) {
       // best-effort revoke
-      this.http.post('/api/auth/logout', { refreshToken: refresh }).subscribe({});
+      this.http.post(`${this.apiBase}/auth/logout`, { refreshToken: refresh }).subscribe({});
     }
     if (typeof window !== 'undefined' && window.localStorage) {
       localStorage.removeItem(this.tokenKey);
@@ -83,18 +89,19 @@ export class AuthService {
     }
   }
 
+  // Backend returns { accessToken, expiresIn } on refresh
   async refreshAccessToken(): Promise<string> {
     const refresh = this.getRefreshToken();
     if (!refresh) throw new Error('no refresh token');
-    const resp$ = this.http.post<{ token: string }>('/api/auth/refresh', { refreshToken: refresh });
+    const resp$ = this.http.post<{ accessToken: string }>(`${this.apiBase}/auth/refresh`, { refreshToken: refresh });
     const resp = await firstValueFrom(resp$);
-    if (!resp || !resp.token) throw new Error('refresh failed');
-    this.setTokens(resp.token, refresh);
-    return resp.token;
+    if (!resp || !resp.accessToken) throw new Error('refresh failed');
+    this.setTokens(resp.accessToken, refresh);
+    return resp.accessToken;
   }
 
   async fetchProfile() {
-    const resp$ = this.http.get('/api/profile');
+    const resp$ = this.http.get(`${this.apiBase}/profile`);
     return await firstValueFrom(resp$);
   }
 }

@@ -11,6 +11,7 @@ import { RoleGuard } from './guards/role.guard';
 import { Role } from './models/role';
 
 export const appRoutes: Routes = [
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
   { path: 'loading-profile', component: LoadingProfileComponent },
   { path: 'inicio', component: InicioComponent, canActivate: [AuthGuard] },
@@ -32,4 +33,6 @@ export const appRoutes: Routes = [
     canActivate: [AuthGuard, RoleGuard],
     data: { roles: [Role.Gerente] }
   }
+  ,
+  { path: '**', redirectTo: 'login' }
 ];
