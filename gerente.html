@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supervisión de Cuentas - MazeBank</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #000;
+            min-height: 100vh;
+            color: #333;
+            margin: 0;
+            padding: 15px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 420px 1fr;
+            gap: 0;
+            height: calc(100vh - 30px);
+            border: 3px solid #DC143C;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            background: linear-gradient(135deg, #8B0000 0%, #DC143C 100%);
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            color: white;
+        }
+
+        .sidebar-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .sidebar-header h2 {
+            margin: 0 0 15px 0;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .sidebar-header .subtitle {
+            margin: 0 0 5px 0;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .sidebar-header .welcome {
+            margin: 0;
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+
+        .search-sidebar {
+            margin-bottom: 30px;
+        }
+
+        .search-sidebar input {
+            width: 100%;
+            padding: 12px 15px;
+            border: none;
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        .search-sidebar input::placeholder {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .search-sidebar input:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .menu-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            flex: 1;
+        }
+
+        .menu-button {
+            background: rgba(220, 20, 60, 0.8);
+            border: none;
+            border-radius: 15px;
+            padding: 20px 15px;
+            color: white;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100px;
+            text-decoration: none;
+        }
+
+        .menu-button:hover {
+            background: rgba(220, 20, 60, 1);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(220, 20, 60, 0.4);
+        }
+
+        .menu-button.active {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .menu-button .icon {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+
+        .menu-button .text {
+            font-size: 0.75rem;
+            font-weight: 600;
+            line-height: 1.2;
+            text-transform: uppercase;
+        }
+
+        .main-content {
+            background: rgba(255, 255, 255, 0.95);
+            display: flex;
+            flex-direction: column;
+            overflow: auto;
+        }
+
+        .content-header {
+            background: white;
+            padding: 25px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .content-header h1 {
+            margin: 0 0 10px 0;
+            font-size: 1.8rem;
+            color: #333;
+            text-transform: uppercase;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        .search-content {
+            position: relative;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .search-content input {
+            width: 100%;
+            padding: 12px 20px;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            background: #f8f9fa;
+            box-sizing: border-box;
+        }
+
+        .search-content input:focus {
+            outline: none;
+            border-color: #DC143C;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 0;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: none;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .header h1 {
+            color: #8B0000;
+            margin-bottom: 10px;
+            font-size: 2rem;
+        }
+
+        .breadcrumb {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .breadcrumb a {
+            color: #DC143C;
+            text-decoration: none;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+
+        .stat-card h3 {
+            color: #8B0000;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .stat-change {
+            font-size: 0.8rem;
+            margin-top: 5px;
+        }
+
+        .positive { color: #28a745; }
+        .negative { color: #dc3545; }
+
+        .main-panel {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 0;
+            box-shadow: none;
+            overflow: hidden;
+            margin: 0 20px 20px 20px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .panel-header {
+            background: linear-gradient(135deg, #8B0000, #DC143C);
+            color: white;
+            padding: 20px;
+        }
+
+        .controls-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid #e0e0e0;
+            background: #f8f9fa;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 40px 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .search-box input:focus {
+            border-color: #DC143C;
+            outline: none;
+            box-shadow: 0 0 10px rgba(220, 20, 60, 0.2);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .filter-select {
+            padding: 10px 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            background: white;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-select:focus {
+            border-color: #DC143C;
+            outline: none;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #DC143C, #8B0000);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(220, 20, 60, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-warning {
+            background: #ffc107;
+            color: #000;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        .accounts-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .accounts-table th {
+            background: #f8f9fa;
+            padding: 15px 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #333;
+            border-bottom: 2px solid #dee2e6;
+            white-space: nowrap;
+        }
+
+        .accounts-table td {
+            padding: 15px 12px;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .accounts-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .account-number {
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            color: #8B0000;
+        }
+
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-suspended {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-closed {
+            background: #d6d8db;
+            color: #383d41;
+        }
+
+        .balance-amount {
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+        }
+
+        .balance-positive {
+            color: #28a745;
+        }
+
+        .balance-negative {
+            color: #dc3545;
+        }
+
+        .actions-cell {
+            display: flex;
+            gap: 5px;
+        }
+
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 0.8rem;
+            border-radius: 5px;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            gap: 10px;
+        }
+
+        .pagination button {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .pagination button:hover {
+            background: #DC143C;
+            color: white;
+            border-color: #DC143C;
+        }
+
+        .pagination button.active {
+            background: #8B0000;
+            color: white;
+            border-color: #8B0000;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 600px;
+            position: relative;
+            animation: modalSlide 0.3s ease-out;
+        }
+
+        @keyframes modalSlide {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .close {
+            position: absolute;
+            right: 20px;
+            top: 15px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #aaa;
+        }
+
+        .close:hover {
+            color: #DC143C;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #DC143C;
+            outline: none;
+        }
+
+        @media (max-width: 1024px) {
+            .container {
+                grid-template-columns: 1fr;
+                height: auto;
+                min-height: calc(100vh - 30px);
+            }
+            
+            .sidebar {
+                order: -1;
+                height: auto;
+            }
+            
+            .menu-section {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 10px;
+            }
+            
+            .menu-button {
+                padding: 12px 8px;
+                height: 80px;
+            }
+            
+            .menu-button .icon {
+                font-size: 1.4rem;
+            }
+            
+            .menu-button .text {
+                font-size: 0.7rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .controls-section {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-box {
+                min-width: 100%;
+            }
+
+            .filter-group {
+                justify-content: center;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                margin: 15px;
+            }
+
+            .accounts-table {
+                font-size: 0.9rem;
+            }
+
+            .accounts-table th,
+            .accounts-table td {
+                padding: 10px 8px;
+            }
+            
+            .menu-section {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .sidebar {
+                padding: 20px;
+            }
+            
+            .container {
+                padding: 10px;
+                border: 2px solid #DC143C;
+            }
+            
+            .main-panel {
+                margin: 0 15px 15px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar with Navigation -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2>MAZEBANK</h2>
+                <p class="subtitle">¡Hola! Juan Pérez bienvenido<br>como Gerente</p>
+                <p class="welcome">Bienvenido a tu Panel de Gestión</p>
+            </div>
+
+            <div class="search-sidebar">
+                <input type="text" placeholder="Buscar acción a realizar">
+            </div>
+
+            <div class="menu-section">
+                <button class="menu-button active" onclick="navigateToSection('supervision')">
+                    <div class="icon">👥</div>
+                    <div class="text">Supervisión<br>Cuentas</div>
+                </button>
+                
+                <button class="menu-button" onclick="navigateToSection('gestion')">
+                    <div class="icon">👤</div>
+                    <div class="text">Gestión<br>Personal</div>
+                </button>
+                
+                <button class="menu-button" onclick="navigateToSection('operaciones')">
+                    <div class="icon">⚙️</div>
+                    <div class="text">Control de<br>Operaciones</div>
+                </button>
+                
+                <button class="menu-button" onclick="navigateToSection('reportes')">
+                    <div class="icon">📊</div>
+                    <div class="text">Reportes y<br>Administración</div>
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="content-header">
+                <h1>SUPERVISIÓN DE CUENTAS</h1>
+                <div class="search-content">
+                    <input type="text" placeholder="Buscar número de cuenta">
+                </div>
+            </div>
+
+            <!-- Statistics Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Total de Cuentas</h3>
+                    <div class="stat-number">2,847</div>
+                    <div class="stat-change positive">+12% este mes</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Cuentas Activas</h3>
+                    <div class="stat-number">2,654</div>
+                    <div class="stat-change positive">93.2%</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Balance Total</h3>
+                    <div class="stat-number">$24.8M</div>
+                    <div class="stat-change positive">+8.5%</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Alertas Pendientes</h3>
+                    <div class="stat-number">23</div>
+                    <div class="stat-change negative">Requiere atención</div>
+                </div>
+            </div>
+
+        <!-- Main Panel -->
+        <div class="main-panel">
+            <div class="panel-header">
+                <h2>Supervisión y Control de Cuentas</h2>
+                <p>Gestiona, supervisa y controla todas las cuentas bajo tu jurisdicción</p>
+            </div>
+
+            <!-- Controls Section -->
+            <div class="controls-section">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Buscar por número de cuenta, cliente, cédula...">
+                    <span class="search-icon">🔍</span>
+                </div>
+                
+                <div class="filter-group">
+                    <select class="filter-select" id="statusFilter">
+                        <option value="">Todos los Estados</option>
+                        <option value="active">Activas</option>
+                        <option value="suspended">Suspendidas</option>
+                        <option value="pending">Pendientes</option>
+                        <option value="closed">Cerradas</option>
+                    </select>
+                    
+                    <select class="filter-select" id="typeFilter">
+                        <option value="">Tipo de Cuenta</option>
+                        <option value="savings">Ahorro</option>
+                        <option value="checking">Corriente</option>
+                        <option value="business">Empresarial</option>
+                    </select>
+                    
+                    <select class="filter-select" id="balanceFilter">
+                        <option value="">Rango de Balance</option>
+                        <option value="low">< $1,000</option>
+                        <option value="medium">$1,000 - $50,000</option>
+                        <option value="high">> $50,000</option>
+                    </select>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="openNewAccountModal()">Nueva Cuenta</button>
+                    <button class="btn btn-secondary" onclick="exportData()">Exportar</button>
+                    <button class="btn btn-warning" onclick="showAlerts()">Ver Alertas</button>
+                </div>
+            </div>
+
+            <!-- Accounts Table -->
+            <div class="table-container">
+                <table class="accounts-table">
+                    <thead>
+                        <tr>
+                            <th>N° Cuenta</th>
+                            <th>Cliente</th>
+                            <th>Tipo</th>
+                            <th>Balance</th>
+                            <th>Estado</th>
+                            <th>Última Actividad</th>
+                            <th>Alertas</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="accountsTableBody">
+                        <!-- Accounts will be populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination">
+                <button onclick="changePage(-1)">← Anterior</button>
+                <button class="active">1</button>
+                <button onclick="changePage(2)">2</button>
+                <button onclick="changePage(3)">3</button>
+                <button onclick="changePage(4)">4</button>
+                <button onclick="changePage(1)">Siguiente →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Account Details -->
+    <div id="accountModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 id="modalTitle">Detalles de la Cuenta</h2>
+            <div id="modalContent">
+                <!-- Content will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample data for demonstration
+        const accounts = [
+            {
+                number: "4001-2345-6789-0123",
+                client: "María González",
+                type: "Ahorro",
+                balance: 25000,
+                status: "active",
+                lastActivity: "2025-09-20",
+                alerts: 0,
+                id: "V-12345678"
+            },
+            {
+                number: "4001-9876-5432-1098",
+                client: "Carlos Rodríguez",
+                type: "Corriente",
+                balance: -1500,
+                status: "suspended",
+                lastActivity: "2025-09-18",
+                alerts: 2,
+                id: "V-87654321"
+            },
+            {
+                number: "4001-5555-4444-3333",
+                client: "Empresa ABC S.A.",
+                type: "Empresarial",
+                balance: 150000,
+                status: "active",
+                lastActivity: "2025-09-23",
+                alerts: 0,
+                id: "J-40123456-7"
+            },
+            {
+                number: "4001-1111-2222-3333",
+                client: "Ana Martínez",
+                type: "Ahorro",
+                balance: 750,
+                status: "pending",
+                lastActivity: "2025-09-15",
+                alerts: 1,
+                id: "V-11223344"
+            },
+            {
+                number: "4001-6666-7777-8888",
+                client: "Pedro Hernández",
+                type: "Corriente",
+                balance: 8200,
+                status: "active",
+                lastActivity: "2025-09-24",
+                alerts: 0,
+                id: "V-55667788"
+            }
+        ];
+
+        let currentPage = 1;
+        let filteredAccounts = [...accounts];
+
+        function populateTable() {
+            const tbody = document.getElementById('accountsTableBody');
+            tbody.innerHTML = '';
+
+            filteredAccounts.forEach(account => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><span class="account-number">${account.number}</span></td>
+                    <td>
+                        <strong>${account.client}</strong><br>
+                        <small>${account.id}</small>
+                    </td>
+                    <td>${account.type}</td>
+                    <td>
+                        <span class="balance-amount ${account.balance >= 0 ? 'balance-positive' : 'balance-negative'}">
+                            $${account.balance.toLocaleString()}
+                        </span>
+                    </td>
+                    <td><span class="status-badge status-${account.status}">${getStatusText(account.status)}</span></td>
+                    <td>${formatDate(account.lastActivity)}</td>
+                    <td>
+                        ${account.alerts > 0 ? 
+                            `<span style="color: #dc3545; font-weight: bold;">⚠️ ${account.alerts}</span>` : 
+                            '<span style="color: #28a745;">✓ OK</span>'
+                        }
+                    </td>
+                    <td class="actions-cell">
+                        <button class="btn btn-primary btn-sm" onclick="viewAccount('${account.number}')">Ver</button>
+                        <button class="btn btn-warning btn-sm" onclick="editAccount('${account.number}')">Editar</button>
+                        <button class="btn btn-danger btn-sm" onclick="blockAccount('${account.number}')">Bloquear</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function getStatusText(status) {
+            const statusMap = {
+                'active': 'Activa',
+                'suspended': 'Suspendida',
+                'pending': 'Pendiente',
+                'closed': 'Cerrada'
+            };
+            return statusMap[status] || status;
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('es-ES', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+        }
+
+        function viewAccount(accountNumber) {
+            const account = accounts.find(acc => acc.number === accountNumber);
+            if (account) {
+                document.getElementById('modalTitle').textContent = `Cuenta: ${account.number}`;
+                document.getElementById('modalContent').innerHTML = `
+                    <div class="form-group">
+                        <label>Cliente:</label>
+                        <p><strong>${account.client}</strong> (${account.id})</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Tipo de Cuenta:</label>
+                        <p>${account.type}</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Balance Actual:</label>
+                        <p class="${account.balance >= 0 ? 'balance-positive' : 'balance-negative'}">
+                            $${account.balance.toLocaleString()}
+                        </p>
+                    </div>
+                    <div class="form-group">
+                        <label>Estado:</label>
+                        <p><span class="status-badge status-${account.status}">${getStatusText(account.status)}</span></p>
+                    </div>
+                    <div class="form-group">
+                        <label>Última Actividad:</label>
+                        <p>${formatDate(account.lastActivity)}</p>
+                    </div>
+                    <div style="margin-top: 30px;">
+                        <button class="btn btn-primary" onclick="closeModal()">Cerrar</button>
+                        <button class="btn btn-warning" onclick="editAccount('${account.number}')">Editar Cuenta</button>
+                    </div>
+                `;
+                document.getElementById('accountModal').style.display = 'block';
+            }
+        }
+
+        function editAccount(accountNumber) {
+            alert(`Función de edición para cuenta: ${accountNumber}\n(En desarrollo)`);
+        }
+
+        function blockAccount(accountNumber) {
+            if (confirm(`¿Está seguro de que desea bloquear la cuenta ${accountNumber}?`)) {
+                alert('Cuenta bloqueada exitosamente');
+                // Update account status in real implementation
+            }
+        }
+
+        function openNewAccountModal() {
+            document.getElementById('modalTitle').textContent = 'Crear Nueva Cuenta';
+            document.getElementById('modalContent').innerHTML = `
+                <div class="form-group">
+                    <label>Número de Identificación:</label>
+                    <input type="text" placeholder="V-12345678 o J-40123456-7">
+                </div>
+                <div class="form-group">
+                    <label>Nombre Completo / Razón Social:</label>
+                    <input type="text" placeholder="Nombre completo o razón social">
+                </div>
+                <div class="form-group">
+                    <label>Tipo de Cuenta:</label>
+                    <select>
+                        <option value="">Seleccionar tipo</option>
+                        <option value="savings">Cuenta de Ahorro</option>
+                        <option value="checking">Cuenta Corriente</option>
+                        <option value="business">Cuenta Empresarial</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Depósito Inicial:</label>
+                    <input type="number" placeholder="0.00" min="0" step="0.01">
+                </div>
+                <div class="form-group">
+                    <label>Observaciones:</label>
+                    <textarea rows="3" placeholder="Observaciones adicionales"></textarea>
+                </div>
+                <div style="margin-top: 30px;">
+                    <button class="btn btn-success" onclick="createAccount()">Crear Cuenta</button>
+                    <button class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
+                </div>
+            `;
+            document.getElementById('accountModal').style.display = 'block';
+        }
+
+        function createAccount() {
+            alert('Cuenta creada exitosamente\n(Función en desarrollo)');
+            closeModal();
+        }
+
+        function closeModal() {
+            document.getElementById('accountModal').style.display = 'none';
+        }
+
+        function exportData() {
+            alert('Exportando datos...\n(Función en desarrollo)');
+        }
+
+        function showAlerts() {
+            alert('Mostrando panel de alertas...\n(Función en desarrollo)');
+        }
+
+        function goToDashboard() {
+            alert('Regresando al dashboard principal...');
+        }
+
+        function navigateToSection(section) {
+            // Remove active class from all buttons
+            document.querySelectorAll('.menu-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Add active class to clicked button
+            event.target.closest('.menu-button').classList.add('active');
+            
+            // Navigate to section
+            switch(section) {
+                case 'supervision':
+                    // Already in supervision - just show message
+                    break;
+                case 'gestion':
+                    alert('Navegando a Gestión Personal...\n(Módulo en desarrollo)');
+                    break;
+                case 'operaciones':
+                    alert('Navegando a Control de Operaciones...\n(Módulo en desarrollo)');
+                    break;
+                case 'reportes':
+                    alert('Navegando a Reportes y Administración...\n(Módulo en desarrollo)');
+                    break;
+            }
+        }
+
+        function changePage(page) {
+            currentPage = page;
+            // Update pagination display
+            document.querySelectorAll('.pagination button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
+        // Search and filter functionality
+        document.getElementById('searchInput').addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            filteredAccounts = accounts.filter(account => 
+                account.number.toLowerCase().includes(searchTerm) ||
+                account.client.toLowerCase().includes(searchTerm) ||
+                account.id.toLowerCase().includes(searchTerm)
+            );
+            populateTable();
+        });
+
+        document.getElementById('statusFilter').addEventListener('change', function() {
+            const status = this.value;
+            filteredAccounts = status ? accounts.filter(account => account.status === status) : [...accounts];
+            populateTable();
+        });
+
+        // Close modal when clicking outside
+        window.addEventListener('click', function(event) {
+            const modal = document.getElementById('accountModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        });
+
+        // Initialize table
+        populateTable();
+    </script>
+</body>
+</html>
